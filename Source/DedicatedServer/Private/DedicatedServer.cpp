@@ -86,7 +86,7 @@ void FDedicatedServerModule::StartupModule()
 											// ToDo: find a better way which also respects the message field...
 											FString sRequiredVersion = FString::FromInt( pResponse->GetIntegerField( TEXT( "required_version" ) ) );
 											UE_LOG( LogDedicatedServer, Warning, TEXT( "The server is outdated( %s -> %s ), restarting..." ), *sVersion, ( sRequiredVersion.Equals( sVersion ) ? *sRequiredVersion : *Str2SemVer( sRequiredVersion ) )/*, pResponse->GetStringField( "message" )*/ );
-											RequestEngineExit(TEXT("The server is outdated"));
+											RequestEngineExit( TEXT( "The server is outdated" ) );
 											m_bShutdown = true;
 										}
 										else UE_LOG( LogDedicatedServer, Display, TEXT( "The server is using the most recent version( %s )" ), *sVersion );
