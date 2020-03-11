@@ -40,12 +40,6 @@ void DumpConsoleHelp();
 			{
 				KEY_EVENT_RECORD hEvent = hInputEvents[0].Event.KeyEvent;
 
-				if ( hEvent.wVirtualKeyCode != VK_TAB && hEvent.wVirtualKeyCode != VK_SHIFT )
-				{
-					// For AutoCompletion
-					m_bRepeatedTab = false;
-				}
-
 				if( hEvent.wVirtualKeyCode == VK_RETURN )
 				{
 					FScopeLock hLock( &m_hLock );
@@ -84,7 +78,7 @@ void DumpConsoleHelp();
 
 							m_hCommandHistory.Add( sInput );
 						}
-						else if ( !sInput.IsEmpty() )
+						else
 						{
 							FCString::Sprintf( sOutput, TEXT( "Unknown Command: %s%s" ), *sInput, LINE_TERMINATOR );
 							::WriteConsole( m_hOutputHandle, sOutput, FCString::Strlen( sOutput ), &iCharsWritten, NULL );
@@ -118,78 +112,7 @@ void DumpConsoleHelp();
 				{
 					FScopeLock hLock( &m_hLock );
 
-					// AutoCompletion section
-
-					// Do the initialization late, so late registrations are captured
-					// Alternatively it can be done in FServerConsole::Show
-					InitLocalConsoleCommandsArray();
-
-					static uint32 iMaxIndex = m_hLocalConsoleCommandLibrary.Num();
-
-					if ( iMaxIndex == 0 )
-					{
-						// Avoiding division by zero in a project with zero console commands
-						return;
-					}
-
-					if ( !m_bRepeatedTab )
-					{
-						//Reset the index and get current input
-						m_iCurrentIndex = 0;
-						m_sAutocompleteInput = m_sInput;
-						m_bRepeatedTab = true;
-					}
-					else if ( hEvent.dwControlKeyState & SHIFT_PRESSED )
-					{
-						// Reverse the order, shift is pressed
-						if ( m_iCurrentIndex != 0 )
-						{
-							--m_iCurrentIndex;
-						}
-						else
-						{
-							// Loop around to the end
-							m_iCurrentIndex = iMaxIndex - 1;
-						}
-					}
-					else
-					{
-						m_iCurrentIndex = (m_iCurrentIndex + 1) % iMaxIndex;
-					}
-
-					bool bLoopAroundOnce = false;
-					for ( ; m_iCurrentIndex < iMaxIndex; )
-					{
-						if ( m_hLocalConsoleCommandLibrary[m_iCurrentIndex].StartsWith( m_sAutocompleteInput ) )
-						{
-							m_sInput = m_hLocalConsoleCommandLibrary[m_iCurrentIndex];
-							RedrawInputLine();
-
-							break;
-						}
-
-						if ( hEvent.dwControlKeyState & SHIFT_PRESSED )
-						{
-							--m_iCurrentIndex;
-						}
-						else
-						{
-							++m_iCurrentIndex;
-						}
-						
-						if ( !bLoopAroundOnce && m_iCurrentIndex > iMaxIndex )
-						{
-							// Reverse order, loop around to the end
-							bLoopAroundOnce = true;
-							m_iCurrentIndex = iMaxIndex - 1;
-						}
-						else if ( !bLoopAroundOnce && m_iCurrentIndex == iMaxIndex )
-						{
-							// Loop around to the start
-							bLoopAroundOnce = true;
-							m_iCurrentIndex = 0;
-						}
-					}
+					// ToDo: AutoCompletion
 				}
 				else if( hEvent.wVirtualKeyCode == VK_UP )
 				{
