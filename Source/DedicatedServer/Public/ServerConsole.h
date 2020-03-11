@@ -48,6 +48,16 @@ DECLARE_LOG_CATEGORY_EXTERN( LogServerConsole, Log, All );
 			FOutputDeviceConsolePlatform*			m_pConsole;
 			FString									m_sInput;
 			FString									m_sUserInput;
+
+			// AutoCompletion
+			void									InitLocalConsoleCommandsArray();
+			FString									m_sAutocompleteInput;
+			bool									m_bRepeatedTab;
+			bool									m_bShiftPressed;
+			uint32									m_iCurrentIndex;
+			TArray<FString>							m_hLocalConsoleCommandLibrary;
+
+			// History
 			TArray<FString>							m_hCommandHistory;
 			int32									m_iCommandHistoryIndex;
 

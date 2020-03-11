@@ -58,6 +58,7 @@ void DumpConsoleHelp()
 	{
 		m_pConsole = static_cast<FOutputDeviceConsolePlatform*>( GLogConsole );
 		m_iCommandHistoryIndex = -1;
+		m_bRepeatedTab = false;
 
 		#if PLATFORM_WINDOWS
 			m_hOutputHandle = INVALID_HANDLE_VALUE;
@@ -123,5 +124,22 @@ void DumpConsoleHelp()
 	void FServerConsole::Serialize( const TCHAR* sData, ELogVerbosity::Type eVerbosity, const class FName& sCategory )
 	{
 		Serialize( sData, eVerbosity, sCategory, -1.0 );
+	}
+
+	void FServerConsole::InitLocalConsoleCommandsArray()
+	{
+		if ( !m_hLocalConsoleCommandLibrary.Num() )
+		{
+			auto OnConsoleVariable = [this]( const TCHAR *Name, IConsoleObject* CVar )
+			{
+				m_hLocalConsoleCommandLibrary.Add( Name );
+			};
+		
+			// Missing 183 commands that are directly parsed. Not available without modification to the engine code.
+			// See UGameEngine::Exec for some of them. They only getm stored in GConsoleCommandLibrary if you use DumpConsoleCommands
+			IConsoleManager::Get().ForEachConsoleObjectThatStartsWith( FConsoleObjectVisitor::CreateLambda( OnConsoleVariable ) );
+
+			m_hLocalConsoleCommandLibrary.Sort( TLess<FString>() );
+		}
 	}
 #endif
