@@ -1,7 +1,11 @@
 // Copyright 2004-2016 YaS-Online, Inc. All Rights Reserved.
 
 #include "DedicatedServer.h"
-#include "DedicatedServerPrivatePCH.h"
+#include "ServerConsole.h"
+
+#include "Http.h"
+#include "OnlineSubsystemSteam.h"
+
 
 DEFINE_LOG_CATEGORY( LogDedicatedServer );
 

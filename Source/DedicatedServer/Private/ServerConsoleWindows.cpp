@@ -1,8 +1,7 @@
 // Copyright 2004-2016 YaS-Online, Inc. All Rights Reserved.
 
-#include "DedicatedServerPrivatePCH.h"
-#include "Engine/World.h"
-#include "Engine/Console.h"
+#include "ServerConsole.h"
+#include "GameFramework/GameModeBase.h"
 
 void DumpConsoleHelp();
 
@@ -158,7 +157,7 @@ void DumpConsoleHelp();
 					}
 
 					bool bLoopAroundOnce = false;
-					for ( ; m_iCurrentIndex < iMaxIndex; )
+					while ( m_iCurrentIndex < iMaxIndex )
 					{
 						if ( m_hLocalConsoleCommandLibrary[m_iCurrentIndex].StartsWith( m_sAutocompleteInput ) )
 						{
